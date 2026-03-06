@@ -91,7 +91,7 @@ for x in string: 	# runs the indented code once per character in the string surr
     send2LCD8(ord(x))	#sends an instruction to display the next character in the string
     utime.sleep_us(300000)	#sleep time in micro seconds i.e. wait for 40 micro seconds between displaying characters
 
-#To comment or uncomment multiple lines of code, select them and press cmd+3
+#To comment or uncomment multiple lines of code, select the lines and press cmd+3
 #comment in the next block of code and rerun your program
 
 # clear_screen()
@@ -103,5 +103,6 @@ for x in string: 	# runs the indented code once per character in the string surr
 #     utime.sleep_us(pause_length)
 
 #try changing the pause_length and string variables from the last code block
+
 
 
