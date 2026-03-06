@@ -2,6 +2,8 @@
 
 The files in this repository contain Raspberry Pi Pico code for the Eng Academy clock project. 
 
+ONshape 3d modelling installation:   https://www.onshape.com/en/education/
+
 Thonny IDE set up:  https://thonny.org/
 
 
