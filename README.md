@@ -1,9 +1,10 @@
 # SV-Eng-Academy-2026
 
-The files in this repository contain the Raspberry Pi code from the Eng Academy highschool club. 
+The files in this repository contain Raspberry Pi Pico code for the Eng Academy clock project. 
 
 For a new file:
   Download the file -> save to your eng academy code folder 
+  
 To add to an existing file:
   copy paste code into your file -> save your changes -> ensure you run the updated code 
 
