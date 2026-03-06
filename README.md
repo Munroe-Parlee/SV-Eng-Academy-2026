@@ -2,9 +2,15 @@
 
 The files in this repository contain Raspberry Pi Pico code for the Eng Academy clock project. 
 
+Thonny IDE set up:  https://thonny.org/
+
+
+
+
 For a new file:
 
   Download the file -> save to your eng academy code folder 
+
   
 To add to an existing file:
 
