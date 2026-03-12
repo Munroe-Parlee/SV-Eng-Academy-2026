@@ -270,13 +270,34 @@ def set_alarm(hours = 0, minutes = 0):
     sleep(1)
     pass
 
+##########==========button interface================######
+def button_pressed():
+    pass
 ##########==========joystick interface================######
+def cursor_left():
+    pass
 
+def cursor_right():
+    pass
+
+def joystick_left():
+    pass
+
+def joystick_right():
+    pass
 ##############servo interface====================##########
+def get_servo_position():
+    pass
+
+def set_servo_position():
+    pass
 
 ########=============audio interface============#########
-    
+def play_note():
+    pass
 
+def play_tune():
+    pass
 #========working code==========#
 setup() 
 
