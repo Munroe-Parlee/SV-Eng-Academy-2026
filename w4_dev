@@ -126,6 +126,7 @@ def write(string = "          ", pause = 0):
     
     #=============================clock interface========================#
 # class time:
+#global time variables
 hh = 0
 mm = 0
 ss = 0
@@ -147,6 +148,12 @@ def set_time(hours = 0, minutes = 0, seconds = 0):
     global hh
     global mm
     global ss
+    if hours < 0:
+        hours = 0
+    if minutes < 0:
+        minutes = 0
+    if hours < 0:
+        hours = 0
     hh = hours
     mm = minutes
     ss = seconds
@@ -158,24 +165,28 @@ def set_alarm(hours = 0, minutes = 0, seconds = 0):
 def alarm():
     pass
 
+def run_clock():
+    while True:
+        sleep(1)
+        tick()
+
 def tick():
     global hh
     global mm
     global ss
     display_time(hh, mm, ss)
-    while (hh > 0) or (mm > 0) or (ss > 0):
-        sleep(1)
-        ss -= 1
-        if ss < 0 and (mm > 0 or hh > 0):
-            ss = 59
-            mm -= 1
-        
-        if mm < 0 and hh > 0:
-            mm = 59
-            hh = hh - 1
-        
-        
-        display_time(hh, mm, ss)
+    
+    ss -= 1
+    if ss < 0 and (mm > 0 or hh > 0):
+        ss = 59
+        mm -= 1
+    
+    if mm < 0 and hh > 0:
+        mm = 59
+        hh = hh - 1
+    
+    
+    display_time(hh, mm, ss)
     pass
 
 def countdown(seconds=3):
@@ -226,6 +237,10 @@ pause = 0.025
 #     send2LCD8(ord(x))	
 #     utime.sleep_us(pause_length)
 
-#try changing the pause_length and string variables from the last code block
-set_time(0, 90, 90)
-tick()
+# #overflow time checking
+# set_time(0, 60, 5)
+# run_clock()
+
+#negative time checking
+set_time(-1, 59, 5)
+run_clock()
