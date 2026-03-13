@@ -419,7 +419,7 @@ rs.value(1) # select register 1 - necessary to send display input
 
 ############edit this to change alarm behaviour##################
 def trigger_alarm():
-    while True:
+    while True: #######the code in this loop runs when the alarm goes off
         write('bang!!', 0)
         sleep(0.5)
         clear_screen()
@@ -427,6 +427,6 @@ def trigger_alarm():
 #####################write user code here#######################
 
 ###manual
-set_time(11, 59, 55)
-set_alarm(12, 0)
+set_time(hours = 11, minutes = 59, seconds = 55)
+set_alarm(hours = 12, minutes = 0)
 run_clock()
