@@ -1,5 +1,6 @@
 #imports
 import machine
+from machine import Pin,PWM,ADC
 import utime
 # import text
 # from hardware_tutorial import clear_screen, register_select, issue_hardware_command, setup, sleep
@@ -136,10 +137,10 @@ alarm_set = False
 alarm_trigger = False
 alarm_armed = False
 
-class time:
-    hh = 0
-    mm = 0
-    ss = 0
+# class time:
+#     hh = 0
+#     mm = 0 
+#     ss = 0
 
 
 
@@ -169,6 +170,7 @@ def set_time(hours = 0, minutes = 0, seconds = 0):
     hh = hours
     mm = minutes
     ss = seconds
+    display_time(hh, mm, ss)
     pass
 
 
@@ -176,6 +178,7 @@ def run_clock():
     global alarm_trigger
     global run_clock
     run_clock = True
+    
     while run_clock is True:
         sleep(1)
         tick()
@@ -269,31 +272,147 @@ def set_alarm(hours = 0, minutes = 0):
     write(f"alarm set: {alarm_string}")
     sleep(1)
     pass
+####################======================input interfaces======================###############
+##########==========input backend===================######
 
 ##########==========button interface================######
-def button_pressed():
+#button pin definition
+button = Pin(1,Pin.IN,Pin.PULL_DOWN)
+state = 0
+def check_button():
+    if button.value() == 1:
+        return True
+    else:
+        return False
     pass
+
+def button_pressed():
+    #add button event code here
+    increment_state()
+    pass
+
+def increment_state():
+    global state
+    state += 1
 ##########==========joystick interface================######
-def cursor_left():
+def move_cursor_left():
+#     issue_hardware_command(04)
     pass
 
 def cursor_right():
     pass
 
+def joystick():
+    value = get_joystick_position()
+    if value<45:
+        joystick_left()
+    if value > 135:
+        joystick_right()
+    sleep(0.5)
 def joystick_left():
+    decrement_time()
     pass
 
 def joystick_right():
+    increment_time()
+    pass
+
+def decrement_time():
+    global hh
+    global mm
+    global ss
+    global state
+    if state == 0:
+        set_time(hours = hh-1, minutes = mm, seconds = ss)
+    if state == 1:
+        set_time(hours = hh, minutes = mm -1, seconds = ss)
+    if state == 2:
+        set_time(hours = hh, minutes = mm, seconds = ss -1)
+    pass
+
+def increment_time():
+    global hh
+    global mm
+    global ss
+    global state
+    if state == 0:
+        set_time(hours = hh+1, minutes = mm, seconds = ss)
+    if state == 1:
+        set_time(hours = hh, minutes = mm+1, seconds = ss)
+    if state == 2:
+        set_time(hours = hh, minutes = mm, seconds = ss+1)
     pass
 ##############servo interface====================##########
-def get_servo_position():
-    pass
+# servo = PWM(Pin(0))#Include the servo motor pin
+# joyX = ADC(28)#Include the potentiometer pin
+# servo.freq(50)#Set the frequency
+# speaker = machine.Pin(5, Pin.OUT)
+
+#PWM min and max value
+joyX = ADC(27)#Include the potentiometer pin
+
+in_min = 0
+in_max = 65535
+#Servo motor min and max degrees
+out_min = 1000
+out_max = 9000
+
+def get_joystick_position():
+    global in_min
+    global in_max
+    #Servo motor min and max degrees
+    global out_min
+    global out_max
+    value = joyX.read_u16()
+    position = (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+    return position
 
 def set_servo_position():
     pass
+####misc####
 
+from time import sleep
+
+servo = PWM(Pin(0))#Include the servo motor pin
+joyX = ADC(26)#Include the potentiometer pin
+
+#servo frequency definition 
+servo.freq(50)#Set the frequency
+
+#speaker pin definition
+speaker = machine.Pin(5, Pin.OUT)
+
+@rp2.asm_pio(
+    set_init=rp2.PIO.OUT_LOW,
+    in_shiftdir=rp2.PIO.SHIFT_LEFT,
+    out_shiftdir=rp2.PIO.SHIFT_LEFT,
+)
+
+def wave_prog():
+    pull(block)
+    mov(x, osr)         # waveCount
+    pull(block)
+    label("loop")
+    mov(y, osr)         # halfWaveNumCycles
+    set(pins, 1)        # high
+    label("high")
+    jmp(y_dec, "high")
+    mov(y, osr)         # halfWaveNumCycles
+    set(pins, 0)        # low
+    label("low")
+    jmp(y_dec, "low")
+    jmp(x_dec, "loop")
+    
+# the clock frequency of Raspberry Pi Pico is 125MHz; 1953125 is 125MHz / 64
+sm = rp2.StateMachine(0, wave_prog, freq=1953125, set_base=Pin(5)) 
+sm.active(1)
 ########=============audio interface============#########
-def play_note():
+def play_note(freq: int, duration: int):
+    # count 1 cycle for jmp() ==> 1 cycle per half wave ==> 2 cycles per wave
+    halfWaveNumCycles = round(1953125.0 / freq / 2)
+    waveCount = round(duration * freq / 1000.0)
+    sm.put(waveCount)
+    sm.put(halfWaveNumCycles)
     pass
 
 def play_tune():
@@ -303,9 +422,10 @@ setup()
 
 rs.value(1) # select register 1 - necessary to send display input
 
+#####################write user code here#######################
 
-string = 'hello world' #string of characters to be displayed
-pause = 0.025
+# string = 'hello world' #string of characters to be displayed
+# pause = 0.025
 # while True:
 #     write(string = string, pause = pause)
 #     sleep(1)
@@ -339,11 +459,39 @@ pause = 0.025
 
 #alarm trigger checking
 
-set_alarm(12, 0)
-arm_alarm(True)
-set_time(11, 59, 55)
-run_clock()
+# set_alarm(12, 0)
+# arm_alarm(True)
+# set_time(11, 59, 55)
+# run_clock()
 
 # 
 # 
 # 
+
+####button testing
+# set_time(11, 59, 55)
+# 
+# while check_button() is False:
+#     sleep(0.1)
+# set_time(11, 59, 55)
+# sleep(1)
+# while True:
+#     if button.value() == 1: # if the button is pressed, reset the time to 12:00:00
+#         set_time(12, 0, 0)
+#     
+# #     tick()
+#     tick()
+#     sleep(1)
+
+
+# while state < 7:
+#     joystick()
+#     if check_button is True:
+#         state +=1
+#         sleep(1)
+
+
+###manual
+set_time(11, 59, 55)
+set_alarm(12, 0)
+run_clock()
