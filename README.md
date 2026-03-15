@@ -1,6 +1,6 @@
 https://github.com/Munroe-Parlee/SV-Eng-Academy-2026/tree/main
 # SV-Eng-Academy-2026
-Full project documentation and code is expected to be uploaded by Sunday March 22nd. Check back in then :)!
+Full project circuit documentation and code is expected to be uploaded by Sunday March 22nd. Check back in then :)!
 
 The files in this repository contain Raspberry Pi Pico code for the Eng Academy clock project. 
 
